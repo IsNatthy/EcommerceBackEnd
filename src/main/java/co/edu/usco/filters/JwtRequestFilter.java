@@ -1,5 +1,6 @@
 package co.edu.usco.filters;
 
+import co.edu.usco.services.jwt.UserDetailsServiceImpl;
 import co.edu.usco.utils.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
