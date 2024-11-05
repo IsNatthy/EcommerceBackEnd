@@ -11,12 +11,22 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Optional;
 
+/**
+ * Service implementation for loading user-specific data.
+ */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
 
+    /**
+     * Loads the user by their username (email).
+     *
+     * @param username the username identifying the user whose data is required.
+     * @return a fully populated UserDetails object.
+     * @throws UsernameNotFoundException if the user could not be found or the user has no granted authority.
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<UserEntity> optionalUser = userRepository.findFirstByEmail(username);
@@ -25,6 +35,4 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(optionalUser.get().getEmail(), optionalUser.get().getPassword(),
                 new ArrayList<>());
     }
-
-
 }
