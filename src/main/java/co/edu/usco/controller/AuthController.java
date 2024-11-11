@@ -3,10 +3,11 @@ package co.edu.usco.controller;
 import co.edu.usco.dto.AuthenticationRequest;
 import co.edu.usco.dto.SignupRequest;
 import co.edu.usco.dto.UserDto;
-import co.edu.usco.entity.UserEntity;
+import co.edu.usco.entity.User;
 import co.edu.usco.repository.UserRepository;
 import co.edu.usco.services.auth.AuthService;
 import co.edu.usco.utils.JwtUtil;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONException;
@@ -15,17 +16,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.*;
+
 import java.io.IOException;
 import java.util.Optional;
 
 /**
- * Controller for handling authentication requests.
+ * Controller for handling authentication-related requests.
  */
 @RestController
 @RequiredArgsConstructor
@@ -39,31 +41,56 @@ public class AuthController {
 
     private final JwtUtil jwtUtil;
 
-    public static final String HEADER_STRING = "Authorization";
-    public static final String TOKEN_PREFIX = "Bearer";
-
     private final AuthService authService;
 
     /**
-     * Authenticates the user and generates a JWT token.
+     * Endpoint for user signup.
+     *
+     * @param signupRequest the signup request containing user details.
+     * @return a ResponseEntity with the created user or an error message.
+     * @throws Exception if an error occurs during signup.
+     */
+    @PostMapping({"/sign-up"})
+    public ResponseEntity<?> signupUser(@RequestBody(required = true) SignupRequest signupRequest)
+            throws Exception {
+
+        if (authService.hasUserWithEmail(signupRequest.getEmail()))
+            return new ResponseEntity<>("User already exists", HttpStatus.NOT_ACCEPTABLE);
+
+        UserDto createdUser = authService.createUser(signupRequest);
+        if (createdUser == null)
+            return new ResponseEntity<>("User not created, come again later", HttpStatus.NOT_ACCEPTABLE);
+
+        return new ResponseEntity<>(createdUser, HttpStatus.OK);
+    }
+
+    public static final String TOKEN_PREFIX = "Bearer ";
+    public static final String HEADER_STRING = "Authorization";
+
+    /**
+     * Endpoint for user authentication.
      *
      * @param authenticationRequest the authentication request containing username and password.
-     * @param response the HTTP response to which the JWT token and user details will be written.
-     * @throws IOException if an input or output exception occurs.
-     * @throws JSONException if a JSON processing error occurs.
+     * @param response the HTTP response.
+     * @throws BadCredentialsException if the credentials are incorrect.
+     * @throws DisabledException if the user is disabled.
+     * @throws UsernameNotFoundException if the username is not found.
+     * @throws IOException if an I/O error occurs.
+     * @throws JSONException if a JSON error occurs.
+     * @throws ServletException if a servlet-specific error occurs.
      */
     @PostMapping("/authenticate")
-    public void createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest,
-                                          HttpServletResponse response) throws IOException, JSONException {
+    public void createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse response) throws BadCredentialsException, DisabledException, UsernameNotFoundException, IOException, JSONException, ServletException {
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
-                    authenticationRequest.getPassword()));
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
         } catch (BadCredentialsException e) {
-            throw new BadCredentialsException("Incorrect username or password");
+            throw new BadCredentialsException("Incorrect username or password.");
+        } catch (DisabledException disabledException) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "User is not activated");
+            return;
         }
-
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-        Optional<UserEntity> optionalUser = userRepository.findFirstByEmail(authenticationRequest.getUsername());
+        Optional<User> optionalUser = userRepository.findFirstByEmail(userDetails.getUsername());
         final String jwt = jwtUtil.generateToken(userDetails.getUsername());
 
         if (optionalUser.isPresent()) {
@@ -72,18 +99,9 @@ public class AuthController {
                     .put("role", optionalUser.get().getRole())
                     .toString()
             );
-
+            response.addHeader("Access-Control-Expose-Headers", "Authorization");
+            response.addHeader("Access-Control-Allow-Headers", "Authorization, X-PINGOTHER, Origin, X-Requested-With, Content-Type, Accept, X-Custom-header");
             response.addHeader(HEADER_STRING, TOKEN_PREFIX + jwt);
         }
-    }
-
-    @PostMapping("/sign-up")
-    public ResponseEntity<?> signupUser(@RequestBody SignupRequest signupRequest) {
-        if (authService.hasUserWithEmail(signupRequest.getEmail())) {
-            return new ResponseEntity<>("User already exists", HttpStatus.NOT_ACCEPTABLE);
-        }
-
-        UserDto userDto = authService.createUser(signupRequest);
-        return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 }

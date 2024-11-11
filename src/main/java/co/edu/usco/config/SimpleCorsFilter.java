@@ -13,7 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Simple CORS filter to handle Cross-Origin Resource Sharing (CORS) requests.
+ * Filter to handle Cross-Origin Resource Sharing (CORS) requests.
+ * This filter sets the necessary headers to allow cross-origin requests.
  */
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -22,20 +23,17 @@ public class SimpleCorsFilter implements Filter {
     @Value("${app.client.url}")
     private String clientAppUrl = "";
 
-    /**
-     * Default constructor.
-     */
     public SimpleCorsFilter() {
     }
 
     /**
-     * Applies the CORS filter to incoming requests.
+     * Filters incoming requests to set CORS headers.
      *
      * @param req the ServletRequest object.
      * @param res the ServletResponse object.
      * @param chain the FilterChain object.
-     * @throws IOException if an I/O error occurs during the processing.
-     * @throws ServletException if a servlet error occurs during the processing.
+     * @throws IOException if an I/O error occurs.
+     * @throws ServletException if a servlet-specific error occurs.
      */
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
@@ -56,18 +54,10 @@ public class SimpleCorsFilter implements Filter {
         }
     }
 
-    /**
-     * Initializes the filter.
-     *
-     * @param filterConfig the FilterConfig object.
-     */
     @Override
     public void init(FilterConfig filterConfig) {
     }
 
-    /**
-     * Destroys the filter.
-     */
     @Override
     public void destroy() {
     }

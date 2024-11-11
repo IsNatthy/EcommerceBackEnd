@@ -1,6 +1,9 @@
 package co.edu.usco.entity;
 
+import co.edu.usco.dto.UserDto;
 import co.edu.usco.enums.UserRole;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -24,4 +27,15 @@ public class User {
     @Lob
     @Column(columnDefinition = "longblob")
     private byte[] img;
+
+
+    public UserDto getUserDto() {
+        UserDto userDto = new UserDto();
+        userDto.setId(id);
+        userDto.setName(name);
+        userDto.setEmail(email);
+        userDto.setReturnedImg(img);
+        userDto.setRole(role);
+        return userDto;
+    }
 }

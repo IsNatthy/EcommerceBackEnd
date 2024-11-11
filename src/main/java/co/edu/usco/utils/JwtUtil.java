@@ -20,64 +20,35 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    // Secret key used for signing the JWT
-    public static final String SECRET = "413F4428472B4B6250655368566D5970337336763979244226452948404D6351";
-
-    /**
-     * Generates a JWT token for the given username.
-     *
-     * @param userName the username for which the token is generated
-     * @return the generated JWT token
-     */
-    public String generateToken(String userName) {
-        Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userName);
-    }
-
-    /**
-     * Creates a JWT token with the given claims and subject.
-     *
-     * @param claims the claims to be included in the token
-     * @param userName the subject of the token
-     * @return the created JWT token
-     */
-    private String createToken(Map<String, Object> claims, String userName) {
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(userName)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 10000 * 60 * 30))
-                .signWith(getSignKey(), SignatureAlgorithm.HS256)
-                .compact();
-    }
-
-    /**
-     * Retrieves the signing key used for signing the JWT.
-     *
-     * @return the signing key
-     */
-    private Key getSignKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET);
-        return Keys.hmacShaKeyFor(keyBytes);
-    }
+    public static final String SECRET = "5367566B59703373367639792F423F4528482B4D6251655468576D5A713474375367566B59703373367639792F423F4528482B4D6251655468576D5A713474375367566B59703373367639792F423F4528482B4D6251655468576D5A713474375367566B59703373367639792F423F4528482B4D6251655468576D5A713474375367566B59703373367639792F423F4528482B4D6251655468576D5A713474375367566B59703373367639792F423F4528482B4D6251655468576D5A713474375367566B59703373367639792F423F4528482B4D6251655468576D5A713474375367566B59703373367639792F423F4528482B4D6251655468576D5A713474375367566B59703373367639792F423F4528482B4D6251655468576D5A713474375367566B59703373367639792F423F4528482B4D6251655468576D5A71347437";
 
     /**
      * Extracts the username from the given JWT token.
      *
-     * @param token the JWT token
-     * @return the username extracted from the token
+     * @param token the JWT token.
+     * @return the username extracted from the token.
      */
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
     /**
-     * Extracts a specific claim from the given JWT token using the provided claims resolver function.
+     * Extracts the expiration date from the given JWT token.
      *
-     * @param token the JWT token
-     * @param claimsResolver the function to resolve the claim
-     * @param <T> the type of the claim
-     * @return the extracted claim
+     * @param token the JWT token.
+     * @return the expiration date extracted from the token.
+     */
+    public Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
+    }
+
+    /**
+     * Extracts a specific claim from the given JWT token.
+     *
+     * @param token the JWT token.
+     * @param claimsResolver a function to extract the claim.
+     * @param <T> the type of the claim.
+     * @return the extracted claim.
      */
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
@@ -87,8 +58,8 @@ public class JwtUtil {
     /**
      * Extracts all claims from the given JWT token.
      *
-     * @param token the JWT token
-     * @return the claims extracted from the token
+     * @param token the JWT token.
+     * @return the claims extracted from the token.
      */
     private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token).getBody();
@@ -97,32 +68,61 @@ public class JwtUtil {
     /**
      * Checks if the given JWT token is expired.
      *
-     * @param token the JWT token
-     * @return true if the token is expired, false otherwise
+     * @param token the JWT token.
+     * @return true if the token is expired, false otherwise.
      */
-    public Boolean isTokenExpired(String token) {
+    private Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
-    }
-
-    /**
-     * Extracts the expiration date from the given JWT token.
-     *
-     * @param token the JWT token
-     * @return the expiration date extracted from the token
-     */
-    public Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
     }
 
     /**
      * Validates the given JWT token against the provided user details.
      *
-     * @param token the JWT token
-     * @param userDetails the user details to validate against
-     * @return true if the token is valid, false otherwise
+     * @param token the JWT token.
+     * @param userDetails the user details to validate against.
+     * @return true if the token is valid, false otherwise.
      */
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
+
+    /**
+     * Generates a new JWT token for the given username.
+     *
+     * @param userName the username for which to generate the token.
+     * @return the generated JWT token.
+     */
+    public String generateToken(String userName) {
+        Map<String, Object> claims = new HashMap<>();
+        return createToken(claims, userName);
+    }
+
+    /**
+     * Creates a new JWT token with the given claims and username.
+     *
+     * @param claims the claims to include in the token.
+     * @param userName the username for which to generate the token.
+     * @return the created JWT token.
+     */
+    private String createToken(Map<String, Object> claims, String userName) {
+        return Jwts
+                .builder()
+                .setClaims(claims)
+                .setSubject(userName)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 10000 * 60 * 30))
+                .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
+    }
+
+    /**
+     * Retrieves the signing key used for JWT token creation and validation.
+     *
+     * @return the signing key.
+     */
+    private Key getSignKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(SECRET);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+
 }

@@ -1,6 +1,6 @@
 package co.edu.usco.services.jwt;
 
-import co.edu.usco.entity.UserEntity;
+import co.edu.usco.entity.User;
 import co.edu.usco.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,18 +21,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private UserRepository userRepository;
 
     /**
-     * Loads the user by their username (email).
+     * Loads the user by their username.
      *
-     * @param username the username identifying the user whose data is required.
-     * @return a fully populated UserDetails object.
-     * @throws UsernameNotFoundException if the user could not be found or the user has no granted authority.
+     * @param username the username of the user to load.
+     * @return the UserDetails object containing user information.
+     * @throws UsernameNotFoundException if the user is not found.
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<UserEntity> optionalUser = userRepository.findFirstByEmail(username);
-
-        if (optionalUser.isEmpty()) throw new UsernameNotFoundException("User not found", null);
-        return new org.springframework.security.core.userdetails.User(optionalUser.get().getEmail(), optionalUser.get().getPassword(),
-                new ArrayList<>());
+        Optional<User> optionalUser = userRepository.findFirstByEmail(username);
+        if (optionalUser.isEmpty()) throw new UsernameNotFoundException("Username not found", null);
+        return new org.springframework.security.core.userdetails.User(optionalUser.get().getEmail(), optionalUser.get().getPassword(), new ArrayList<>());
     }
+
 }

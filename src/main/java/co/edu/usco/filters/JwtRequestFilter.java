@@ -21,7 +21,7 @@ import java.io.IOException;
  */
 @Component
 @RequiredArgsConstructor
-public class JwtRequestFilter extends OncePerRequestFilter {
+public class JwtRequestFilter extends OncePerRequestFilter  {
 
     private final UserDetailsServiceImpl userDetailsService;
 
@@ -30,11 +30,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     /**
      * Filters incoming requests to validate JWT tokens and set the authentication context.
      *
-     * @param request the HTTP request
-     * @param response the HTTP response
-     * @param filterChain the filter chain
-     * @throws ServletException if an error occurs during filtering
-     * @throws IOException if an I/O error occurs during filtering
+     * @param request the HTTP request.
+     * @param response the HTTP response.
+     * @param filterChain the filter chain.
+     * @throws ServletException if a servlet-specific error occurs.
+     * @throws IOException if an I/O error occurs.
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -42,7 +42,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String token = null;
         String username = null;
 
-        // Extract the JWT token from the Authorization header
+        // Extract JWT token from the Authorization header
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
             username = jwtUtil.extractUsername(token);
@@ -57,7 +57,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
-            filterChain.doFilter(request, response);
         }
+
+        filterChain.doFilter(request, response);
     }
+
 }
