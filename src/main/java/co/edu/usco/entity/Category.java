@@ -1,6 +1,6 @@
 package co.edu.usco.entity;
 
-import co.edu.usco.dto.CategoryDto;
+import co.edu.usco.dto.product.CategoryDto;
 import jakarta.persistence.*;
 import lombok.Data;
 

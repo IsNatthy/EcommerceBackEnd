@@ -1,7 +1,7 @@
 package co.edu.usco.services.auth;
 
-import co.edu.usco.dto.SignupRequest;
-import co.edu.usco.dto.UserDto;
+import co.edu.usco.dto.user.SignupRequest;
+import co.edu.usco.dto.user.UserDto;
 import org.springframework.stereotype.Service;
 
 /**

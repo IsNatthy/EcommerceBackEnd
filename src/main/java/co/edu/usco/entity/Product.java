@@ -1,6 +1,6 @@
 package co.edu.usco.entity;
 
-import co.edu.usco.dto.ProductDto;
+import co.edu.usco.dto.product.ProductDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;

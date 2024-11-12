@@ -1,8 +1,8 @@
 package co.edu.usco.controller;
 
-import co.edu.usco.dto.AuthenticationRequest;
-import co.edu.usco.dto.SignupRequest;
-import co.edu.usco.dto.UserDto;
+import co.edu.usco.dto.user.AuthenticationRequest;
+import co.edu.usco.dto.user.SignupRequest;
+import co.edu.usco.dto.user.UserDto;
 import co.edu.usco.entity.User;
 import co.edu.usco.repository.UserRepository;
 import co.edu.usco.services.auth.AuthService;

@@ -1,6 +1,6 @@
 package co.edu.usco.entity;
 
-import co.edu.usco.dto.UserDto;
+import co.edu.usco.dto.user.UserDto;
 import co.edu.usco.enums.UserRole;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;

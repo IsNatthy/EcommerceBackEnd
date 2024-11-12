@@ -1,0 +1,12 @@
+package co.edu.usco.dto.user;
+
+import lombok.Data;
+
+@Data
+public class AuthenticationRequest {
+
+    private String username;
+
+    private String password;
+
+}
