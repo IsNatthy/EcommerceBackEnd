@@ -19,6 +19,7 @@ import java.util.List;
 @RequestMapping("/api/admin/")
 @RequiredArgsConstructor
 public class AdminProductController {
+
     private final AdminProductService adminProductService;
 
     /**
@@ -59,5 +60,17 @@ public class AdminProductController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    /**
+     * Searches for products by their title.
+     *
+     * @param title the title to search for.
+     * @return a list of ProductDto containing product details that match the search criteria.
+     */
+    @GetMapping("/search/{title}")
+    public ResponseEntity<List<ProductDto>> searchProductByTitle(@PathVariable("title") String title) {
+        List<ProductDto> productDtos = adminProductService.searchProductByTitle(title);
+        return ResponseEntity.ok(productDtos);
     }
 }

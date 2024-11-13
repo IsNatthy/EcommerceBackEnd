@@ -15,4 +15,6 @@ public interface AdminProductService {
 
     ProductDto getProductById(Long productId);
 
+    List<ProductDto> searchProductByTitle(String title);
+
 }

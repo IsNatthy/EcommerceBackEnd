@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 public class AdminProductServiceImpl implements AdminProductService {
 
     private final ProductRepository productRepository;
-
     private final CategoryRepository categoryRepository;
 
     /**
@@ -39,7 +38,8 @@ public class AdminProductServiceImpl implements AdminProductService {
         product.setPrice(secondProductDto.getPrice());
         product.setDescription(secondProductDto.getDescription());
         product.setImg(secondProductDto.getImg().getBytes());
-        Category category = categoryRepository.findById(Long.parseLong(secondProductDto.getCategoryId())).orElseThrow(() -> new RuntimeException("Category not found"));
+        Category category = categoryRepository.findById(Long.parseLong(secondProductDto.getCategoryId()))
+                .orElseThrow(() -> new RuntimeException("Category not found"));
         product.setCategory(category);
         return productRepository.save(product);
     }
@@ -79,5 +79,27 @@ public class AdminProductServiceImpl implements AdminProductService {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Searches for products by their title.
+     *
+     * @param title the title to search for.
+     * @return a list of ProductDto containing product details that match the search criteria.
+     */
+    @Override
+    public List<ProductDto> searchProductByTitle(String title) {
+        List<Product> products = productRepository.findAllByNameContaining(title);
+        return products.stream().map(product -> {
+            ProductDto productDto = new ProductDto();
+            productDto.setId(product.getId());
+            productDto.setName(product.getName());
+            productDto.setDescription(product.getDescription());
+            productDto.setPrice(product.getPrice());
+            productDto.setCategoryId(product.getCategory().getId());
+            productDto.setCategoryName(product.getCategory().getName());
+            productDto.setReturnedImg(product.getImg());
+            return productDto;
+        }).collect(Collectors.toList());
     }
 }
