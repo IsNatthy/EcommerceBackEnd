@@ -17,4 +17,6 @@ public interface AdminProductService {
 
     List<ProductDto> searchProductByTitle(String title);
 
+    boolean deleteProduct(Long id);
+
 }

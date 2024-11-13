@@ -102,4 +102,14 @@ public class AdminProductServiceImpl implements AdminProductService {
             return productDto;
         }).collect(Collectors.toList());
     }
+
+    public boolean deleteProduct(Long id) {
+        Optional<Product> optionalProduct = productRepository.findById(id);
+        if (optionalProduct.isPresent()) {
+            productRepository.deleteById(id);
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
