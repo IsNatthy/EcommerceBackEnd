@@ -9,12 +9,21 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service implementation for managing categories in the admin panel.
+ */
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
 
+    /**
+     * Creates a new category.
+     *
+     * @param categoryDto the data transfer object containing category details.
+     * @return the saved Category entity.
+     */
     public Category createCategory(CategoryDto categoryDto) {
         Category category = new Category();
         category.setName(categoryDto.getName());
@@ -22,6 +31,11 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.save(category);
     }
 
+    /**
+     * Retrieves all categories from the repository.
+     *
+     * @return a list of CategoryDto containing category details.
+     */
     @Override
     public List<CategoryDto> getAllCategories() {
         List<Category> categories = categoryRepository.findAll();

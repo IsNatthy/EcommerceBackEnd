@@ -4,15 +4,19 @@ import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * Data Transfer Object (DTO) used for transferring product data without
- * handling file uploads, typically for retrieving and displaying product information.
+ * Data Transfer Object (DTO) used for creating or updating a product,
+ * especially when handling file uploads.
  */
 @Data
-public class ProductDto {
+public class SecondProductDto {
 
     private Long id;
 
     private String name;
+
+    private String rating;
+
+    private Long availableQuantity;
 
     private Long price;
 
@@ -22,8 +26,6 @@ public class ProductDto {
 
     private byte[] returnedImg;
 
-    private Long categoryId;
-
-    private String categoryName;
+    private String categoryId;
 
 }
