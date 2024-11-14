@@ -103,6 +103,12 @@ public class AdminProductServiceImpl implements AdminProductService {
         }).collect(Collectors.toList());
     }
 
+    /**
+     * Deletes a product by its ID.
+     *
+     * @param id the ID of the product to delete.
+     * @return true if the product was successfully deleted, false if the product was not found.
+     */
     public boolean deleteProduct(Long id) {
         Optional<Product> optionalProduct = productRepository.findById(id);
         if (optionalProduct.isPresent()) {

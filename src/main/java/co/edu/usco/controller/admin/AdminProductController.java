@@ -74,12 +74,24 @@ public class AdminProductController {
         return ResponseEntity.ok(productDtos);
     }
 
+    /**
+     * Deletes a product by its ID.
+     *
+     * @param productId the ID of the product to delete.
+     * @return a ResponseEntity with no content if the deletion is successful.
+     */
     @DeleteMapping("/product/{productId}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) {
         adminProductService.deleteProduct(productId);
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Deletes an entity by its ID.
+     *
+     * @param id the ID of the entity to delete.
+     * @return a ResponseEntity with no content if the deletion is successful, or a 404 status if the entity is not found.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEntity(@PathVariable Long id) {
         boolean deleted = adminProductService.deleteProduct(id);
