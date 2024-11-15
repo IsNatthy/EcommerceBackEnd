@@ -1,5 +1,6 @@
 package co.edu.usco.services.customer.cart;
 
+import co.edu.usco.dto.order.OrderDto;
 import co.edu.usco.entity.Order;
 import co.edu.usco.entity.Product;
 import co.edu.usco.entity.User;
@@ -15,7 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Service implementation for managing cart-related operations.
@@ -71,7 +74,7 @@ public class CartServiceImpl implements CartService {
                 order.setTotalAmount(order.getTotalAmount() + cart.getPrice());
                 order.getCartItems().add(cart);
                 orderRepository.save(order);
-                
+
                 CartItemsDto productAddedToCartDto = new CartItemsDto();
                 productAddedToCartDto.setId(updatedCart.getId());
                 return ResponseEntity.status(HttpStatus.CREATED).body(productAddedToCartDto);
@@ -79,5 +82,24 @@ public class CartServiceImpl implements CartService {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User or product not found");
             }
         }
+    }
+
+    /**
+     * Retrieves the cart by user ID.
+     *
+     * @param userId the ID of the user.
+     * @return the OrderDto containing cart details.
+     */
+    @Override
+    public OrderDto getCartByUserId(Long userId) {
+        Order order = orderRepository.findByUserIdAndStatus(userId, OrderStatus.Pending);
+        List<CartItemsDto> cartItemsDtos = order.getCartItems().stream().map(CartItems::getCartDto).collect(Collectors.toList());
+        OrderDto orderDto = new OrderDto();
+        orderDto.setCartItems(cartItemsDtos);
+        orderDto.setAmount(order.getAmount());
+        orderDto.setId(order.getId());
+        orderDto.setStatus(order.getStatus());
+        orderDto.setTotalAmount(order.getTotalAmount());
+        return orderDto;
     }
 }
