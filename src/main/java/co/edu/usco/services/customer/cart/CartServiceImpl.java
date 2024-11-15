@@ -99,6 +99,11 @@ public class CartServiceImpl implements CartService {
         orderDto.setAmount(order.getAmount());
         orderDto.setId(order.getId());
         orderDto.setStatus(order.getStatus());
+        orderDto.setDiscount(order.getDiscount());
+        if(order.getCoupon() != null){
+            orderDto.setCouponName(order.getCoupon().getName());
+        }
+
         orderDto.setTotalAmount(order.getTotalAmount());
         return orderDto;
     }

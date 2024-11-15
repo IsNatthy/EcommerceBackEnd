@@ -32,7 +32,13 @@ public class Order {
 
     private Long totalAmount;
 
+    private Long discount;
+
     private UUID trackingId;
+
+    @OneToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "coupon_id", referencedColumnName = "id")
+    private Coupon coupon;
 
     @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
@@ -52,6 +58,9 @@ public class Order {
         orderDto.setPayment(payment);
         orderDto.setStatus(status);
         orderDto.setUserName(user.getName());
+        if(coupon != null){
+            orderDto.setCouponName(coupon.getName());
+        }
         return orderDto;
     }
 
