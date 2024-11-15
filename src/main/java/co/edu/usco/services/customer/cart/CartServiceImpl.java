@@ -1,6 +1,7 @@
 package co.edu.usco.services.customer.cart;
 
 import co.edu.usco.dto.order.OrderDto;
+import co.edu.usco.dto.product.QuantityChangeProductDto;
 import co.edu.usco.entity.Order;
 import co.edu.usco.entity.Product;
 import co.edu.usco.entity.User;
@@ -106,5 +107,68 @@ public class CartServiceImpl implements CartService {
 
         orderDto.setTotalAmount(order.getTotalAmount());
         return orderDto;
+    }
+
+    /**
+     * Decreases the quantity of a product in the cart.
+     *
+     * @param quantityChangeProductDto the DTO containing product quantity change details.
+     * @return the updated OrderDto with the decreased product quantity.
+     */
+    @Override
+    public OrderDto decreaseProductQuantity(QuantityChangeProductDto quantityChangeProductDto) {
+        Order order = orderRepository.findByUserIdAndStatus(quantityChangeProductDto.getUserId(), OrderStatus.Pending);
+        Optional<Product> optionalProduct = productRepository.findById(quantityChangeProductDto.getProductId());
+        Optional<CartItems> optionalCartItem = cartRepository.findByProductIdAndOrderIdAndUserId(quantityChangeProductDto.getProductId(), order.getId(), quantityChangeProductDto.getUserId());
+        CartItems cartItem = optionalCartItem.get();
+        order.setAmount(order.getAmount() - optionalProduct.get().getPrice());
+        order.setTotalAmount(order.getTotalAmount() - optionalProduct.get().getPrice());
+        cartItem.setQuantity(optionalCartItem.get().getQuantity() - 1);
+
+        if(order.getCoupon() != null){
+            double discountAmount = ((order.getCoupon().getDiscount() / 100.0) * order.getTotalAmount());
+            double netAmount = order.getTotalAmount() - discountAmount;
+
+            long discountAmountLong = (long) discountAmount;
+            long netAmountLong = (long) netAmount;
+
+            order.setAmount(netAmountLong);
+            order.setDiscount(discountAmountLong);
+        }
+        cartRepository.save(cartItem);
+        orderRepository.save(order);
+        return order.getOrderDto();
+    }
+
+    /**
+     * Increases the quantity of a product in the cart.
+     *
+     * @param quantityChangeProductDto the DTO containing product quantity change details.
+     * @return the updated OrderDto with the increased product quantity.
+     */
+    @Override
+    public OrderDto increaseProductQuantity(QuantityChangeProductDto quantityChangeProductDto) {
+        Order order = orderRepository.findByUserIdAndStatus(quantityChangeProductDto.getUserId(), OrderStatus.Pending);
+        Optional<Product> optionalProduct = productRepository.findById(quantityChangeProductDto.getProductId());
+        Optional<CartItems> optionalCartItem = cartRepository.findByProductIdAndOrderIdAndUserId(quantityChangeProductDto.getProductId(), order.getId(), quantityChangeProductDto.getUserId());
+        CartItems cartItem = optionalCartItem.get();
+        Product product = optionalProduct.get();
+        order.setAmount(order.getAmount() + optionalProduct.get().getPrice());
+        order.setTotalAmount(order.getTotalAmount() + optionalProduct.get().getPrice());
+        cartItem.setQuantity(optionalCartItem.get().getQuantity() + 1);
+
+        if(order.getCoupon() != null){
+            double discountAmount = ((order.getCoupon().getDiscount() / 100.0) * order.getTotalAmount());
+            double netAmount = order.getTotalAmount() - discountAmount;
+
+            long discountAmountLong = (long) discountAmount;
+            long netAmountLong = (long) netAmount;
+
+            order.setAmount(netAmountLong);
+            order.setDiscount(discountAmountLong);
+        }
+        cartRepository.save(cartItem);
+        orderRepository.save(order);
+        return order.getOrderDto();
     }
 }

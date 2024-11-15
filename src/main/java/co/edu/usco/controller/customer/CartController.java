@@ -2,6 +2,7 @@ package co.edu.usco.controller.customer;
 
 import co.edu.usco.dto.cart.CartItemsDto;
 import co.edu.usco.dto.order.OrderDto;
+import co.edu.usco.dto.product.QuantityChangeProductDto;
 import co.edu.usco.services.customer.cart.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,18 @@ public class CartController {
     public ResponseEntity<OrderDto> getCartByUserId(@PathVariable Long userId) {
         OrderDto orderDto = cartService.getCartByUserId(userId);
         return ResponseEntity.status(HttpStatus.OK).body(orderDto);
+    }
+
+    @PostMapping("/deduction")
+    public ResponseEntity<OrderDto> addMinusOnProduct(@RequestBody QuantityChangeProductDto quantityChangeProductDto) {
+        OrderDto orderDto = cartService.decreaseProductQuantity(quantityChangeProductDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(orderDto);
+    }
+
+    @PostMapping("/addition")
+    public ResponseEntity<OrderDto> increaseProductQuantity(@RequestBody QuantityChangeProductDto quantityChangeProductDto) {
+        OrderDto OrderDto = cartService.increaseProductQuantity(quantityChangeProductDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(OrderDto);
     }
 
 }
