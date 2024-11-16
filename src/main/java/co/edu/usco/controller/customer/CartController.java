@@ -42,12 +42,24 @@ public class CartController {
         return ResponseEntity.status(HttpStatus.OK).body(orderDto);
     }
 
+    /**
+     * Decreases the quantity of a product in the cart.
+     *
+     * @param quantityChangeProductDto the DTO containing product quantity change details.
+     * @return a ResponseEntity containing the updated OrderDto with the decreased product quantity.
+     */
     @PostMapping("/deduction")
     public ResponseEntity<OrderDto> addMinusOnProduct(@RequestBody QuantityChangeProductDto quantityChangeProductDto) {
         OrderDto orderDto = cartService.decreaseProductQuantity(quantityChangeProductDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(orderDto);
     }
 
+    /**
+     * Increases the quantity of a product in the cart.
+     *
+     * @param quantityChangeProductDto the DTO containing product quantity change details.
+     * @return a ResponseEntity containing the updated OrderDto with the increased product quantity.
+     */
     @PostMapping("/addition")
     public ResponseEntity<OrderDto> increaseProductQuantity(@RequestBody QuantityChangeProductDto quantityChangeProductDto) {
         OrderDto OrderDto = cartService.increaseProductQuantity(quantityChangeProductDto);

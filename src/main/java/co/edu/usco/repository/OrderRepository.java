@@ -6,6 +6,8 @@ import co.edu.usco.enums.OrderStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Repository interface for managing Order entities.
  */
@@ -29,4 +31,15 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
      * @return the found Order entity.
      */
     Order findByUserIdAndStatus(Long userId, OrderStatus status);
+
+    /**
+     * Finds all Order entities with statuses in the provided list.
+     *
+     * @param orderStatusList the list of order statuses to filter by.
+     * @return the list of found Order entities.
+     */
+    List<Order> findAllByStatusIn(List<OrderStatus> orderStatusList);
+
+    List<Order> findAllByUserIdAndStatusIn(Long userId, List<OrderStatus> orderStatusList);
+
 }
