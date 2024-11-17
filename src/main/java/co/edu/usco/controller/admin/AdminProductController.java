@@ -75,6 +75,24 @@ public class AdminProductController {
     }
 
     /**
+     * Updates a product by its ID.
+     *
+     * @param productId the ID of the product to update.
+     * @param productDto the data transfer object containing updated product details.
+     * @return the updated ProductDto, or a 404 status if the product is not found.
+     * @throws IOException if an I/O error occurs while processing the product image.
+     */
+    @PutMapping("/product/{productId}")
+    public ResponseEntity<ProductDto> updateProduct(@PathVariable Long productId, @ModelAttribute ProductDto productDto) throws IOException {
+        ProductDto updatedProduct = adminProductService.updateProduct(productId, productDto);
+        if (updatedProduct != null) {
+            return ResponseEntity.ok(updatedProduct);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
      * Deletes a product by its ID.
      *
      * @param productId the ID of the product to delete.

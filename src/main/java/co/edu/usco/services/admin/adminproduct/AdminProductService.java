@@ -19,4 +19,7 @@ public interface AdminProductService {
 
     boolean deleteProduct(Long id);
 
+    ProductDto updateProduct(Long productId, ProductDto productDto) throws IOException;
+
 }
+

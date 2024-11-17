@@ -104,6 +104,33 @@ public class AdminProductServiceImpl implements AdminProductService {
     }
 
     /**
+     * Updates a product by its ID.
+     *
+     * @param productId the ID of the product to update.
+     * @param productDto the data transfer object containing updated product details.
+     * @return the updated ProductDto, or null if the product or category is not found.
+     * @throws IOException if an I/O error occurs while processing the product image.
+     */
+    @Override
+    public ProductDto updateProduct(Long productId, ProductDto productDto) throws IOException {
+        Optional<Product> optionalProduct = productRepository.findById(productId);
+        Optional<Category> category = categoryRepository.findById(productDto.getCategoryId());
+        if (optionalProduct.isPresent() && category.isPresent()) {
+            Product product = optionalProduct.get();
+            product.setName(productDto.getName());
+            product.setPrice(productDto.getPrice());
+            product.setDescription(productDto.getDescription());
+            if (productDto.getImg() != null) {
+                product.setImg(productDto.getImg().getBytes());
+            }
+            product.setCategory(category.get());
+            return productRepository.save(product).getProductDto();
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Deletes a product by its ID.
      *
      * @param id the ID of the product to delete.
