@@ -1,5 +1,6 @@
 package co.edu.usco.controller.admin;
 
+import co.edu.usco.dto.analytics.AnalyticsResponse;
 import co.edu.usco.dto.order.OrderDto;
 import co.edu.usco.services.admin.adminorder.AdminOrderService;
 import lombok.RequiredArgsConstructor;
@@ -31,5 +32,11 @@ public class AdminOrderController {
         if (orderDto == null)
             return new ResponseEntity<>("Something went wrong!", HttpStatus.BAD_REQUEST);
         return ResponseEntity.status(HttpStatus.OK).body(orderDto);
+    }
+
+    @GetMapping("/order/analytics")
+    public ResponseEntity<AnalyticsResponse> getAnalytics() {
+        AnalyticsResponse response = adminOrderService.calculateAnalytics();
+        return ResponseEntity.ok(response);
     }
 }
