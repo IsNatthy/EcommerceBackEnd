@@ -1,12 +1,18 @@
 package co.edu.usco.services.customer.product;
 
+import co.edu.usco.dto.product.CompleteProductDetailDto;
 import co.edu.usco.dto.product.ProductDto;
+import co.edu.usco.entity.FAQ;
 import co.edu.usco.entity.Product;
+import co.edu.usco.entity.Reviews;
+import co.edu.usco.repository.FAQRepository;
 import co.edu.usco.repository.ProductRepository;
+import co.edu.usco.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -17,6 +23,10 @@ import java.util.stream.Collectors;
 public class CustomerProductServiceImpl implements CustomerProductService {
 
     private final ProductRepository productRepository;
+
+    private final FAQRepository faqRepository;
+
+    private final ReviewRepository reviewRepository;
 
     /**
      * Searches for products by their title.
@@ -39,4 +49,24 @@ public class CustomerProductServiceImpl implements CustomerProductService {
         return productRepository.findAll().stream().map(Product::getProductDto).collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves the complete product details by product ID.
+     *
+     * @param productId the ID of the product to retrieve details for.
+     * @return a CompleteProductDetailDto containing product details, FAQs, and reviews, or null if the product is not found.
+     */
+    @Override
+    public CompleteProductDetailDto getCompleteProductDetailById(Long productId) {
+        Optional<Product> optionalProduct = productRepository.findById(productId);
+        List<FAQ> faqList = faqRepository.findAllByProductId(productId);
+        List<Reviews> reviewsList = reviewRepository.findAllByProductId(productId);
+        if (optionalProduct.isPresent()) {
+            CompleteProductDetailDto completeProductDetailDto = new CompleteProductDetailDto();
+            completeProductDetailDto.setProductDto(optionalProduct.get().getProductDto());
+            completeProductDetailDto.setFaqDtoList(faqList.stream().map(FAQ::getFAQDto).collect(Collectors.toList()));
+            completeProductDetailDto.setReviewDtoList(reviewsList.stream().map(Reviews::getReviewDto).collect(Collectors.toList()));
+            return completeProductDetailDto;
+        }
+        return null;
+    }
 }

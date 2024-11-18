@@ -1,5 +1,6 @@
 package co.edu.usco.entity;
 
+import co.edu.usco.dto.wishlist.WishlistDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;

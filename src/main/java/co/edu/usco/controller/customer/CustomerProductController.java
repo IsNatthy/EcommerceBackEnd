@@ -1,5 +1,6 @@
 package co.edu.usco.controller.customer;
 
+import co.edu.usco.dto.product.CompleteProductDetailDto;
 import co.edu.usco.dto.product.ProductDto;
 import co.edu.usco.services.customer.product.CustomerProductService;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,20 @@ public class CustomerProductController {
     public ResponseEntity<List<ProductDto>> searchProductByTitle(@PathVariable("title") String title) {
         List<ProductDto> productDtos = customerProductService.searchProductByTitle(title);
         return ResponseEntity.ok(productDtos);
+    }
+
+    /**
+     * Retrieves the complete product details by product ID.
+     *
+     * @param productId the ID of the product to retrieve details for.
+     * @return a ResponseEntity containing the CompleteProductDetailDto with product details,
+     *         or a ResponseEntity with a 404 status if the product is not found.
+     */
+    @GetMapping("/product/{productId}")
+    public ResponseEntity<CompleteProductDetailDto> getProductDetailById(@PathVariable Long productId) {
+        CompleteProductDetailDto completeProductDetailDto = customerProductService.getCompleteProductDetailById(productId);
+        if (completeProductDetailDto == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(completeProductDetailDto);
     }
 
 }
