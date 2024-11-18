@@ -1,28 +1,24 @@
 package co.edu.usco.entity;
 
-import co.edu.usco.dto.cart.CartItemsDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-@Entity
 @Data
-public class CartItems {
+@Entity
+public class Wishlist {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long price;
-
-    private Long quantity;
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "product_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
+
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -31,20 +27,15 @@ public class CartItems {
     @JsonIgnore
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
-    private Order order;
-
-    public CartItemsDto getCartDto() {
-        CartItemsDto cartItemsDto = new CartItemsDto();
-        cartItemsDto.setId(id);
-        cartItemsDto.setPrice(price);
-        cartItemsDto.setProductId(product.getId());
-        cartItemsDto.setQuantity(quantity);
-        cartItemsDto.setUserId(user.getId());
-        cartItemsDto.setProductName(product.getName());
-        cartItemsDto.setReturnedImg(product.getImg());
-        return cartItemsDto;
+    public WishlistDto getWishlistDto() {
+        WishlistDto wishlistDto = new WishlistDto();
+        wishlistDto.setId(id);
+        wishlistDto.setProductId(product.getId());
+        wishlistDto.setReturnedImg(product.getImg());
+        wishlistDto.setProductName(product.getName());
+        wishlistDto.setProductDescription(product.getDescription());
+        wishlistDto.setPrice(product.getPrice());
+        wishlistDto.setUserId(user.getId());
+        return wishlistDto;
     }
 }
-
