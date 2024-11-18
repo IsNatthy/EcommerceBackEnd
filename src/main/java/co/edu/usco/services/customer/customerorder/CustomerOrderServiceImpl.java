@@ -72,4 +72,20 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
     public List<OrderDto> getMyPlacedOrders(Long userId) {
         return orderRepository.findAllByUserIdAndStatusIn(userId, List.of(OrderStatus.Placed, OrderStatus.Shipped, OrderStatus.Delivered)).stream().map(Order::getOrderDto).collect(Collectors.toList());
     }
+
+    /**
+     * Searches for an order by its tracking ID.
+     *
+     * @param trackingId the tracking ID of the order to search for.
+     * @return the OrderDto if the order is found, or null if not found.
+     */
+    @Override
+    public OrderDto searchOrderByTrackingId(UUID trackingId) {
+        Optional<Order> optionalOrder = orderRepository.findByTrackingId(trackingId);
+        if (optionalOrder.isPresent()) {
+            Order order = optionalOrder.get();
+            return order.getOrderDto();
+        }
+        return null;
+    }
 }

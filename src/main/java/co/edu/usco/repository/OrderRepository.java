@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Repository interface for managing Order entities.
@@ -40,6 +42,20 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
      */
     List<Order> findAllByStatusIn(List<OrderStatus> orderStatusList);
 
+    /**
+     * Finds all Order entities by user ID and statuses in the provided list.
+     *
+     * @param userId the ID of the user associated with the orders.
+     * @param orderStatusList the list of order statuses to filter by.
+     * @return the list of found Order entities.
+     */
     List<Order> findAllByUserIdAndStatusIn(Long userId, List<OrderStatus> orderStatusList);
 
+    /**
+     * Finds an Order entity by tracking ID.
+     *
+     * @param trackingId the tracking ID of the order.
+     * @return an Optional containing the found Order entity, or empty if not found.
+     */
+    Optional<Order> findByTrackingId(UUID trackingId);
 }
