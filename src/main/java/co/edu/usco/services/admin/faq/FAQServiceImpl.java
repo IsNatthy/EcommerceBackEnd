@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+/**
+ * Service implementation for managing FAQs.
+ */
 @Service
 @RequiredArgsConstructor
 public class FAQServiceImpl implements FAQService {
@@ -18,6 +21,13 @@ public class FAQServiceImpl implements FAQService {
 
     private final ProductRepository productRepository;
 
+    /**
+     * Posts a new FAQ for a given product.
+     *
+     * @param productId the ID of the product to which the FAQ is related.
+     * @param faqDto the data transfer object containing the FAQ details.
+     * @return the created FAQDto, or null if the product is not found.
+     */
     @Override
     public FAQDto postFAQ(Long productId, FAQDto faqDto) {
         Optional<Product> optionalProduct = productRepository.findById(productId);

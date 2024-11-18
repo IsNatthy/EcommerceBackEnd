@@ -46,8 +46,9 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
             order.setDate(new Date());
             order.setTrackingId(UUID.randomUUID());
             order.setAddress(placeOrderDto.getAddress());
-//            order.setAmount(order.getAmount());
+
             orderRepository.save(order);
+
             User user = optionalUser.get();
             Order newOrder = new Order();
             newOrder.setAmount(0L);
@@ -61,6 +62,12 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
         return null;
     }
 
+    /**
+     * Retrieves the list of orders placed by a user.
+     *
+     * @param userId the ID of the user whose placed orders are to be retrieved.
+     * @return a list of OrderDto containing the details of the placed orders.
+     */
     @Override
     public List<OrderDto> getMyPlacedOrders(Long userId) {
         return orderRepository.findAllByUserIdAndStatusIn(userId, List.of(OrderStatus.Placed, OrderStatus.Shipped, OrderStatus.Delivered)).stream().map(Order::getOrderDto).collect(Collectors.toList());
