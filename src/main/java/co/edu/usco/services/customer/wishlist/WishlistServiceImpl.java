@@ -26,6 +26,9 @@ public class WishlistServiceImpl implements WishlistService {
 
     @Override
     public WishlistDto addProductToWishlist(WishlistDto wishlistDto) {
+        if (isProductInWishlist(wishlistDto.getUserId(), wishlistDto.getProductId())) {
+            return null;
+        }
         Optional<Product> optionalProduct = productRepository.findById(wishlistDto.getProductId());
         Optional<User> optionalUser = userRepository.findById(wishlistDto.getUserId());
         if (optionalUser.isPresent() && optionalProduct.isPresent()) {
@@ -38,6 +41,10 @@ public class WishlistServiceImpl implements WishlistService {
             return createdWishlistDto;
         }
         return null;
+    }
+
+    public boolean isProductInWishlist(Long userId, Long productId) {
+        return wishlistRepository.existsByUserIdAndProductId(userId, productId);
     }
 
     @Override
