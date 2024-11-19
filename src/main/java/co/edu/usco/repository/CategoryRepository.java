@@ -6,7 +6,17 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Repository interface for managing Category entities.
+ */
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
+
+    /**
+     * Finds a list of Category entities by name.
+     *
+     * @param title the name of the category.
+     * @return a list of Category entities that contain the specified name.
+     */
     List<Category> findAllByNameContaining(String title);
 }

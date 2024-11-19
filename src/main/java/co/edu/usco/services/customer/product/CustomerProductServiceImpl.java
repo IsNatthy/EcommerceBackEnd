@@ -1,10 +1,13 @@
 package co.edu.usco.services.customer.product;
 
+import co.edu.usco.dto.product.CategoryDto;
 import co.edu.usco.dto.product.CompleteProductDetailDto;
 import co.edu.usco.dto.product.ProductDto;
+import co.edu.usco.entity.Category;
 import co.edu.usco.entity.FAQ;
 import co.edu.usco.entity.Product;
 import co.edu.usco.entity.Reviews;
+import co.edu.usco.repository.CategoryRepository;
 import co.edu.usco.repository.FAQRepository;
 import co.edu.usco.repository.ProductRepository;
 import co.edu.usco.repository.ReviewRepository;
@@ -28,6 +31,8 @@ public class CustomerProductServiceImpl implements CustomerProductService {
 
     private final ReviewRepository reviewRepository;
 
+    private final CategoryRepository categoryRepository;
+
     /**
      * Searches for products by their title.
      *
@@ -47,6 +52,27 @@ public class CustomerProductServiceImpl implements CustomerProductService {
     @Override
     public List<ProductDto> getAllProducts() {
         return productRepository.findAll().stream().map(Product::getProductDto).collect(Collectors.toList());
+    }
+
+    /**
+     * Retrieves all categories.
+     *
+     * @return a list of CategoryDto with category details.
+     */
+    @Override
+    public List<CategoryDto> getAllCategories() {
+        return categoryRepository.findAll().stream().map(Category::getCategoryDto).collect(Collectors.toList());
+    }
+
+    /**
+     * Retrieves products by category ID.
+     *
+     * @param categoryId the ID of the category to retrieve products for.
+     * @return a list of ProductDto with product details that belong to the specified category.
+     */
+    @Override
+    public List<ProductDto> getProductsByCategory(Long categoryId) {
+        return productRepository.findAllByCategoryId(categoryId).stream().map(Product::getProductDto).collect(Collectors.toList());
     }
 
     /**

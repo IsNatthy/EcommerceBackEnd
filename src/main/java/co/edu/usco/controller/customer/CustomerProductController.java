@@ -1,5 +1,6 @@
 package co.edu.usco.controller.customer;
 
+import co.edu.usco.dto.product.CategoryDto;
 import co.edu.usco.dto.product.CompleteProductDetailDto;
 import co.edu.usco.dto.product.ProductDto;
 import co.edu.usco.services.customer.product.CustomerProductService;
@@ -57,6 +58,29 @@ public class CustomerProductController {
         CompleteProductDetailDto completeProductDetailDto = customerProductService.getCompleteProductDetailById(productId);
         if (completeProductDetailDto == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(completeProductDetailDto);
+    }
+
+    /**
+     * Retrieves all categories.
+     *
+     * @return a ResponseEntity containing a list of CategoryDto with category details.
+     */
+    @GetMapping("/categories")
+    public ResponseEntity<List<CategoryDto>> getAllCategories() {
+        List<CategoryDto> categoryDtos = customerProductService.getAllCategories();
+        return ResponseEntity.ok(categoryDtos);
+    }
+
+    /**
+     * Retrieves products by category ID.
+     *
+     * @param categoryId the ID of the category to retrieve products for.
+     * @return a ResponseEntity containing a list of ProductDto with product details that belong to the specified category.
+     */
+    @GetMapping("/products/{categoryId}")
+    public ResponseEntity<List<ProductDto>> getProductsByCategoryId(@PathVariable Long categoryId) {
+        List<ProductDto> productDtos = customerProductService.getProductsByCategory(categoryId);
+        return ResponseEntity.ok(productDtos);
     }
 
 }

@@ -62,14 +62,42 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
      */
     Optional<Order> findByTrackingId(UUID trackingId);
 
+    /**
+     * Counts the number of orders by month and year.
+     *
+     * @param year the year to filter by.
+     * @param month the month to filter by.
+     * @return the number of orders in the specified month and year.
+     */
     @Query("SELECT COUNT(o) FROM Order o WHERE YEAR(o.date) = :year AND MONTH(o.date) = :month")
     Long countOrdersByMonthAndYear(int year, int month);
 
+    /**
+     * Sums the earnings by month and year.
+     *
+     * @param year the year to filter by.
+     * @param month the month to filter by.
+     * @return the sum of earnings in the specified month and year.
+     */
     @Query("SELECT SUM(o.amount) FROM Order o WHERE YEAR(o.date) = :year AND MONTH(o.date) = :month")
     BigDecimal sumEarningsByMonthAndYear(int year, int month);
 
+    /**
+     * Finds a list of Order entities by date range and status.
+     *
+     * @param startOfMonth the start of the date range.
+     * @param endOfMonth the end of the date range.
+     * @param status the status to filter by.
+     * @return the list of found Order entities.
+     */
     List<Order> findByDateBetweenAndStatus(Date startOfMonth, Date endOfMonth, OrderStatus status);
 
+    /**
+     * Counts the number of orders by status.
+     *
+     * @param status the status to filter by.
+     * @return the number of orders with the specified status.
+     */
     Long countByStatus(OrderStatus status);
 
 }

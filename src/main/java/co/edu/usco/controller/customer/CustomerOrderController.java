@@ -32,6 +32,12 @@ public class CustomerOrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(OrderDto);
     }
 
+    /**
+     * Retrieves the list of orders placed by a specific user.
+     *
+     * @param userId the ID of the user whose orders are to be retrieved.
+     * @return a ResponseEntity containing a list of OrderDto objects.
+     */
     @GetMapping("/myOrders/{userId}")
     public ResponseEntity<List<OrderDto>> getMyPlacedOrders(@PathVariable Long userId) {
         List<OrderDto> orderDtos = customerOrderService.getMyPlacedOrders(userId);

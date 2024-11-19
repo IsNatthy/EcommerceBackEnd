@@ -1,5 +1,6 @@
 package co.edu.usco.services.auth;
 
+import co.edu.usco.dto.user.ChangePasswordDto;
 import co.edu.usco.dto.user.SignupRequest;
 import co.edu.usco.dto.user.UserDto;
 import co.edu.usco.entity.Order;
@@ -12,8 +13,13 @@ import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.util.Optional;
 
 /**
  * Service implementation for authentication-related operations.
@@ -85,6 +91,80 @@ public class AuthServiceImpl implements AuthService {
             user.setRole(UserRole.ADMIN);
             user.setPassword(new BCryptPasswordEncoder().encode("admin"));
             userRepository.save(user);
+        }
+    }
+
+    /**
+     * Retrieves a user by their ID.
+     *
+     * @param userId the ID of the user to retrieve.
+     * @return the UserDto with user details.
+     */
+    @Override
+    public UserDto getUserById(Long userId) {
+        UserDto userDto = new UserDto();
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            userDto = optionalUser.get().getUserDto();
+            userDto.setReturnedImg(optionalUser.get().getImg());
+        }
+        return userDto;
+    }
+
+    /**
+     * Updates a user's details.
+     *
+     * @param userDto the data transfer object containing the updated user details.
+     * @return the updated UserDto.
+     * @throws IOException if an input or output exception occurred.
+     */
+    @Override
+    public UserDto updateUser(UserDto userDto) throws IOException {
+        Optional<User> userOptional = userRepository.findById(userDto.getId());
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setEmail(userDto.getEmail());
+            user.setName(userDto.getName());
+            if(userDto.getImg() != null){
+                user.setImg(userDto.getImg().getBytes());
+            }
+
+            User updatedUser = userRepository.save(user);
+            UserDto updatedUserDto = new UserDto();
+            updatedUserDto.setId(updatedUser.getId());
+            return updatedUserDto;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Updates a user's password by their ID.
+     *
+     * @param changePasswordDto the data transfer object containing the password change details.
+     * @return a ResponseEntity indicating the result of the operation.
+     */
+    @Override
+    public ResponseEntity<?> updatePasswordById(ChangePasswordDto changePasswordDto) {
+        User user = null;
+        try {
+            Optional<User> userOptional = userRepository.findById(changePasswordDto.getId());
+            if (userOptional.isPresent()) {
+                user = userOptional.get();
+                if (this.bCryptPasswordEncoder.matches(changePasswordDto.getOldPassword(), user.getPassword())) {
+                    user.setPassword(bCryptPasswordEncoder.encode(changePasswordDto.getNewPassword()));
+                    User updateUser = userRepository.save(user);
+                    UserDto userDto = new UserDto();
+                    userDto.setId(updateUser.getId());
+                    return ResponseEntity.status(HttpStatus.OK).body(userDto);
+                } else {
+                    return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Old password is incorrect");
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
         }
     }
 }

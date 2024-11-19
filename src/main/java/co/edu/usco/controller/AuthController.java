@@ -1,6 +1,7 @@
 package co.edu.usco.controller;
 
 import co.edu.usco.dto.user.AuthenticationRequest;
+import co.edu.usco.dto.user.ChangePasswordDto;
 import co.edu.usco.dto.user.SignupRequest;
 import co.edu.usco.dto.user.UserDto;
 import co.edu.usco.entity.User;
@@ -102,6 +103,54 @@ public class AuthController {
             response.addHeader("Access-Control-Expose-Headers", "Authorization");
             response.addHeader("Access-Control-Allow-Headers", "Authorization, X-PINGOTHER, Origin, X-Requested-With, Content-Type, Accept, X-Custom-header");
             response.addHeader(HEADER_STRING, TOKEN_PREFIX + jwt);
+        }
+    }
+
+    /**
+     * Updates the profile of a user.
+     *
+     * @param userDto the data transfer object containing the user details to be updated.
+     * @return a ResponseEntity containing the updated UserDto if successful, or a 404 Not Found status if the user is not found.
+     * @throws IOException if an I/O error occurs during the update.
+     */
+    @PostMapping("/api/update")
+    public ResponseEntity<UserDto> updateProfile(@ModelAttribute UserDto userDto) throws IOException {
+        UserDto updatedUser = authService.updateUser(userDto);
+        if (updatedUser != null) {
+            return ResponseEntity.ok(updatedUser);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
+     * Retrieves a user by their ID.
+     *
+     * @param userId the ID of the user to retrieve.
+     * @return a ResponseEntity containing the UserDto if found, or a 404 Not Found status if the user is not found.
+     */
+    @GetMapping("/api/user/{userId}")
+    public ResponseEntity<UserDto> getUserById(@PathVariable Long userId) {
+        UserDto userDto = authService.getUserById(userId);
+        if (userDto != null) {
+            return ResponseEntity.ok(userDto);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
+     * Updates the password of a user.
+     *
+     * @param changePasswordDto the data transfer object containing the password change details.
+     * @return a ResponseEntity with the result of the password update operation.
+     */
+    @PostMapping("/api/updatePassword")
+    public ResponseEntity<?> updatePassword(@RequestBody ChangePasswordDto changePasswordDto) {
+        try {
+            return authService.updatePasswordById(changePasswordDto);
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Something went wrong");
         }
     }
 }

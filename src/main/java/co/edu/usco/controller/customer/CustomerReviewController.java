@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
+/**
+ * REST controller for managing customer review operations.
+ */
 @RestController
 @RequestMapping("/api/customer")
 @RequiredArgsConstructor

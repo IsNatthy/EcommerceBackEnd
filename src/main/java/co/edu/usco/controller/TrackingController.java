@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 
+/**
+ * REST controller for tracking orders.
+ */
 @RestController
 @RequiredArgsConstructor
 public class TrackingController {

@@ -4,6 +4,7 @@ import co.edu.usco.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -20,4 +21,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      */
     List<Product> findAllByNameContaining(String title);
 
+    /**
+     * Finds all Product entities by category ID.
+     *
+     * @param categoryId the ID of the category.
+     * @return a list of Product entities that belong to the specified category.
+     */
+    List<Product> findAllByCategoryId(Long categoryId);
 }
