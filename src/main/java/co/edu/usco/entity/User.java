@@ -7,6 +7,9 @@ import jakarta.persistence.Table;
 import jakarta.persistence.*;
 import lombok.Data;
 
+/**
+ * Entity class representing a User.
+ */
 @Entity
 @Data
 @Table(name = "users")
@@ -28,7 +31,11 @@ public class User {
     @Column(columnDefinition = "longblob")
     private byte[] img;
 
-
+    /**
+     * Converts this User entity to a UserDto.
+     *
+     * @return a UserDto containing the user's details.
+     */
     public UserDto getUserDto() {
         UserDto userDto = new UserDto();
         userDto.setId(id);

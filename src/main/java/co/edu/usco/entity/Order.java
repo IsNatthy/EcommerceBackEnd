@@ -9,6 +9,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Entity class representing an Order.
+ */
 @Entity
 @Data
 @Table(name = "orders")
@@ -47,6 +50,11 @@ public class Order {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
     private List<CartItems> cartItems;
 
+    /**
+     * Converts the Order entity to an OrderDto.
+     *
+     * @return OrderDto object containing order details.
+     */
     public OrderDto getOrderDto() {
         OrderDto orderDto = new OrderDto();
         orderDto.setId(id);
@@ -58,7 +66,7 @@ public class Order {
         orderDto.setPayment(payment);
         orderDto.setStatus(status);
         orderDto.setUserName(user.getName());
-        if(coupon != null){
+        if (coupon != null) {
             orderDto.setCouponName(coupon.getName());
         }
         return orderDto;
