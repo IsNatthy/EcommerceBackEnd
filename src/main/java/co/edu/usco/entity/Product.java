@@ -1,5 +1,6 @@
 package co.edu.usco.entity;
 
+import co.edu.usco.audit.service.AuditProductListener;
 import co.edu.usco.dto.product.ProductDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -13,6 +14,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @Entity
 @Data
 @Table(name = "product")
+@EntityListeners(AuditProductListener.class)
 public class Product {
 
     /**

@@ -1,5 +1,6 @@
 package co.edu.usco.entity;
 
+import co.edu.usco.audit.service.AuditCouponListener;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -11,6 +12,7 @@ import java.util.Date;
 @Entity
 @Data
 @Table(name = "coupons")
+@EntityListeners(AuditCouponListener.class)
 public class Coupon {
 
     /**

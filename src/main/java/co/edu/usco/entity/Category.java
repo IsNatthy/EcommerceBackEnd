@@ -1,5 +1,6 @@
 package co.edu.usco.entity;
 
+import co.edu.usco.audit.service.AuditCategoryListener;
 import co.edu.usco.dto.product.CategoryDto;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -10,6 +11,7 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name = "category")
+@EntityListeners(AuditCategoryListener.class)
 public class Category {
 
     @Id
