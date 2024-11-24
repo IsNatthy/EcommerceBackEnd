@@ -12,6 +12,7 @@ import org.hibernate.annotations.OnDeleteAction;
  */
 @Data
 @Entity
+@Table(name = "faq")
 public class FAQ {
 
     /**

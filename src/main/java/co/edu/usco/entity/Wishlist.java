@@ -1,5 +1,6 @@
 package co.edu.usco.entity;
 
+import co.edu.usco.audit.service.AuditWishlistListener;
 import co.edu.usco.dto.wishlist.WishlistDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -12,6 +13,8 @@ import org.hibernate.annotations.OnDeleteAction;
  */
 @Data
 @Entity
+@Table(name = "wishlist")
+@EntityListeners(AuditWishlistListener.class)
 public class Wishlist {
 
     /**

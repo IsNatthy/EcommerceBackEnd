@@ -12,6 +12,7 @@ import org.hibernate.annotations.OnDeleteAction;
  */
 @Entity
 @Data
+@Table(name = "cart_items")
 public class CartItems {
 
     /**
